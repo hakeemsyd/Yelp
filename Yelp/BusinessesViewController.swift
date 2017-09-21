@@ -63,10 +63,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "BusinessCell", for: indexPath) as! BusinessCell
-        let b = businesses[indexPath.row]
-        cell.howFarView.text = b.distance
-        Helper.loadPhoto(withUrl: b.imageURL!, into: cell.displayImageView)
-        cell.businessNameView.text = b.name
+        cell.update(with: businesses[indexPath.row])
         return cell
     }
     

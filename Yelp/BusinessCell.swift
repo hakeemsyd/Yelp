@@ -10,6 +10,10 @@ import UIKit
 
 class BusinessCell: UITableViewCell {
 
+    @IBOutlet weak var addressView: UILabel!
+    @IBOutlet weak var categoriesView: UILabel!
+    @IBOutlet weak var reviewsImageView: UIImageView!
+    @IBOutlet weak var reviewCountView: UILabel!
     @IBOutlet weak var howFarView: UILabel!
     @IBOutlet weak var businessNameView: UILabel!
     @IBOutlet weak var displayImageView: UIImageView!
@@ -23,5 +27,14 @@ class BusinessCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
-
+    
+    func update(with business: Business){
+        howFarView.text = business.distance
+        businessNameView.text = business.name
+        reviewCountView.text = "\(business.reviewCount ?? 0) Reviews"
+        categoriesView.text = business.categories
+        addressView.text = business.address
+        Helper.loadPhoto(withUrl: business.imageURL!, into: displayImageView)
+        Helper.loadPhoto(withUrl: business.ratingImageURL!, into: reviewsImageView)
+    }
 }
