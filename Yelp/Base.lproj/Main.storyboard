@@ -152,7 +152,19 @@
                     <view key="view" contentMode="scaleToFill" id="0Ah-KK-POV">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="ASD-WG-LeS">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            </tableView>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Jxl-xO-kJ1" firstAttribute="top" secondItem="ASD-WG-LeS" secondAttribute="bottom" id="eDS-mA-NBl"/>
+                            <constraint firstAttribute="trailing" secondItem="ASD-WG-LeS" secondAttribute="trailing" id="iTM-Xp-RCe"/>
+                            <constraint firstItem="ASD-WG-LeS" firstAttribute="top" secondItem="0Ah-KK-POV" secondAttribute="top" id="wtM-Wy-sNm"/>
+                            <constraint firstItem="ASD-WG-LeS" firstAttribute="leading" secondItem="0Ah-KK-POV" secondAttribute="leading" id="zO4-lS-n8y"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Filters" id="vwg-0Y-oT4">
                         <barButtonItem key="leftBarButtonItem" title="Cancel" id="RNp-Ji-qH1">

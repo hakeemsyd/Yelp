@@ -14,6 +14,8 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     var searchInProgress: AFHTTPRequestOperation!
     var businesses: [Business] = [Business]()
+    var refreshControl: UIRefreshControl = UIRefreshControl()
+    var isMoreDataLoading = false
     
     var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
@@ -24,13 +26,16 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         
         self.navigationController?.navigationBar.barTintColor = UIColor(red:0.71, green:0.16, blue:0.09, alpha:1.0)
         searchBar = UISearchBar()
-        //searchBar.sizeToFit()
-        
-        // the UIViewController comes with a navigationItem property
-        // this will automatically be initialized for you if when the
-        // view controller is added to a navigation controller's stack
-        // you just need to set the titleView to be the search bar
         navigationItem.titleView = searchBar
+
+        refreshControl.addTarget(self, action: #selector(onUserInitiatedRefresh(_:)), for: UIControlEvents.valueChanged)
+        tableView.insertSubview(refreshControl, at: 0)
+        
+        /*let tableFooterView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 50))
+        loadingView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+        loadingView.center = tableFooterView.center
+        tableFooterView.addSubview(loadingView)
+        self.tableView.tableFooterView = tableFooterView*/
         
         tableView.delegate = self
         searchBar.delegate = self
@@ -64,6 +69,22 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if(businesses.count - indexPath.row <= 4 /*&& !self.isMoreDataLoading*/){
+            //self.isMoreDataLoading = true;
+            //loadingView.startAnimating()
+            
+            // ... Code to load more results ...
+            /*self.fetchData(offset: posts.count,handler: {(data, response, error) in
+                self.isMoreDataLoading = false;
+                self.loadingView.stopAnimating()
+                self.posts += self.parsePosts(data: data)
+                self.tableView.reloadData()
+            });*/
+            
+        }
+        
+        
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "BusinessCell", for: indexPath) as! BusinessCell
         cell.update(with: businesses[indexPath.row])
         return cell
@@ -86,6 +107,9 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
                 
                 self.businesses = businesses ?? []
                 self.tableView.reloadData()
+                self.refreshControl.endRefreshing()
+                self.isMoreDataLoading = false;
+                
                 MBProgressHUD.hide(for: self.view, animated: true)
                 if let businesses = businesses {
                     for business in businesses {
@@ -96,6 +120,10 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
                 
             }
         )
+    }
+
+    func onUserInitiatedRefresh(_ refreshControl: UIRefreshControl) {
+        update(with: searchBar.text ?? "")
     }
     
     /*
