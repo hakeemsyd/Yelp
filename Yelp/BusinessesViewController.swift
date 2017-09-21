@@ -8,6 +8,7 @@
 
 import UIKit
 import AFNetworking
+import MBProgressHUD
 
 class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
     
@@ -34,6 +35,9 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.delegate = self
         searchBar.delegate = self
         tableView.dataSource = self
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
         update(with: searchBar.text!)    /* Example of Yelp search with more search options specified
          Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
          self.businesses = businesses
@@ -44,7 +48,6 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
          }
          }
          */
-        
     }
     
     override func didReceiveMemoryWarning() {
@@ -74,13 +77,16 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     private func update(with term: String){
         if(self.searchInProgress != nil && self.searchInProgress.isExecuting){
             self.searchInProgress.cancel()
+            MBProgressHUD.hide(for: self.view, animated: true)
         }
         
+        MBProgressHUD.showAdded(to: self.view, animated: true)
         self.searchInProgress =
             Business.searchWithTerm(term: term, completion: { (businesses: [Business]?, error: Error?) -> Void in
                 
                 self.businesses = businesses ?? []
                 self.tableView.reloadData()
+                MBProgressHUD.hide(for: self.view, animated: true)
                 if let businesses = businesses {
                     for business in businesses {
                         print(business.name!)
