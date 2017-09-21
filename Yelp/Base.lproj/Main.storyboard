@@ -128,6 +128,9 @@
                     <navigationItem key="navigationItem" id="hAD-lk-QmH">
                         <barButtonItem key="leftBarButtonItem" title="Filter" id="f0a-hr-EZw">
                             <color key="tintColor" white="0.96999999999999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <segue destination="MWM-QL-71E" kind="presentation" id="rKy-m7-bwl"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
@@ -137,6 +140,38 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Fgb-4b-F1b" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2727.1999999999998" y="357.57121439280365"/>
+        </scene>
+        <!--Filters-->
+        <scene sceneID="J87-ai-UHW">
+            <objects>
+                <viewController id="fY6-w8-ZgB" customClass="FiltersViewController" customModule="Yelp" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="lAa-02-Yif"/>
+                        <viewControllerLayoutGuide type="bottom" id="Jxl-xO-kJ1"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="0Ah-KK-POV">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Filters" id="vwg-0Y-oT4">
+                        <barButtonItem key="leftBarButtonItem" title="Cancel" id="RNp-Ji-qH1">
+                            <color key="tintColor" white="0.96999999999999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <action selector="onCancel:" destination="fY6-w8-ZgB" id="do3-Sl-txK"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Search" id="6zS-Pn-UPa">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <connections>
+                                <action selector="onSave:" destination="fY6-w8-ZgB" id="WhR-da-EJg"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="bkf-lq-VaG" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4367.1999999999998" y="360.2698650674663"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Ebz-Y9-a5J">
@@ -155,6 +190,24 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yI9-Ch-g5l" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1788" y="357.57121439280365"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="gxG-KR-oxm">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="MWM-QL-71E" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="nT5-94-gZ8">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="fY6-w8-ZgB" kind="relationship" relationship="rootViewController" id="E2U-Yp-LJl"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="NqG-65-7P0" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3428" y="360.2698650674663"/>
         </scene>
     </scenes>
 </document>
