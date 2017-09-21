@@ -34,32 +34,38 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="YQs-ZA-nek">
-                                                    <rect key="frame" x="18" y="7" width="80" height="80"/>
+                                                    <rect key="frame" x="18" y="8" width="80" height="80"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="80" id="7fk-cn-6rf"/>
                                                         <constraint firstAttribute="width" constant="80" id="Pj8-go-s1e"/>
                                                     </constraints>
                                                 </imageView>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The resturant the resturant" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FSr-yh-vPj">
-                                                    <rect key="frame" x="116" y="8" width="207" height="21"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" text="0.8mi" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="72n-tm-7WL">
+                                                    <rect key="frame" x="323" y="12" width="44" height="14"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="44" id="8WC-WU-XNJ"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCaption2"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0.8mi" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="72n-tm-7WL">
-                                                    <rect key="frame" x="337" y="12" width="30" height="14"/>
-                                                    <fontDescription key="fontDescription" style="UICTFontTextStyleCaption2"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="The resturant the resturant" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FSr-yh-vPj">
+                                                    <rect key="frame" x="106" y="8" width="179" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="FSr-yh-vPj" firstAttribute="top" secondItem="2FZ-XV-i3V" secondAttribute="top" constant="8" id="4KJ-mS-ft1"/>
-                                                <constraint firstItem="YQs-ZA-nek" firstAttribute="top" secondItem="2FZ-XV-i3V" secondAttribute="top" constant="7" id="827-n5-bIw"/>
                                                 <constraint firstItem="72n-tm-7WL" firstAttribute="top" secondItem="2FZ-XV-i3V" secondAttribute="topMargin" constant="4" id="953-yu-GED"/>
+                                                <constraint firstAttribute="bottom" secondItem="YQs-ZA-nek" secondAttribute="bottom" constant="8" id="EHT-EE-O28"/>
+                                                <constraint firstItem="72n-tm-7WL" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="FSr-yh-vPj" secondAttribute="trailing" constant="8" id="HKu-4a-KOz"/>
+                                                <constraint firstItem="FSr-yh-vPj" firstAttribute="leading" secondItem="2FZ-XV-i3V" secondAttribute="leadingMargin" constant="98" id="Wfm-1T-UO1"/>
                                                 <constraint firstItem="YQs-ZA-nek" firstAttribute="leading" secondItem="2FZ-XV-i3V" secondAttribute="leading" constant="18" id="c5e-aa-ekJ"/>
-                                                <constraint firstItem="FSr-yh-vPj" firstAttribute="leading" secondItem="YQs-ZA-nek" secondAttribute="trailing" constant="18" id="mT3-rp-ExC"/>
+                                                <constraint firstItem="YQs-ZA-nek" firstAttribute="top" secondItem="2FZ-XV-i3V" secondAttribute="top" constant="8" id="p97-Ie-OCc"/>
                                                 <constraint firstItem="72n-tm-7WL" firstAttribute="trailing" secondItem="2FZ-XV-i3V" secondAttribute="trailingMargin" id="tWD-dj-zN8"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="FSr-yh-vPj" secondAttribute="bottom" constant="59.5" id="uUS-q4-OIB"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
