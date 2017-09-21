@@ -14,18 +14,27 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     var searchInProgress: AFHTTPRequestOperation!
     var businesses: [Business] = [Business]()
     
-    @IBOutlet weak var searchBar: UISearchBar!
+    var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 120
         
+        self.navigationController?.navigationBar.barTintColor = UIColor(red:0.71, green:0.16, blue:0.09, alpha:1.0)
+        searchBar = UISearchBar()
+        //searchBar.sizeToFit()
+        
+        // the UIViewController comes with a navigationItem property
+        // this will automatically be initialized for you if when the
+        // view controller is added to a navigation controller's stack
+        // you just need to set the titleView to be the search bar
+        navigationItem.titleView = searchBar
+        
         tableView.delegate = self
         searchBar.delegate = self
         tableView.dataSource = self
-        update(with: searchBar.text!)
-        /* Example of Yelp search with more search options specified
+        update(with: searchBar.text!)    /* Example of Yelp search with more search options specified
          Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
          self.businesses = businesses
          
