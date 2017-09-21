@@ -7,11 +7,14 @@
 //
 
 import UIKit
+import AFNetworking
 
-class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
     
+    var searchInProgress: AFHTTPRequestOperation!
     var businesses: [Business] = [Business]()
     
+    @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,22 +22,9 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.estimatedRowHeight = 120
         
         tableView.delegate = self
+        searchBar.delegate = self
         tableView.dataSource = self
-        
-        Business.searchWithTerm(term: "Thai", completion: { (businesses: [Business]?, error: Error?) -> Void in
-            
-            self.businesses = businesses ?? []
-            self.tableView.reloadData()
-            if let businesses = businesses {
-                for business in businesses {
-                    print(business.name!)
-                    print(business.address!)
-                }
-            }
-            
-            }
-        )
-        
+        update(with: searchBar.text!)
         /* Example of Yelp search with more search options specified
          Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
          self.businesses = businesses
@@ -65,6 +55,32 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         let cell = tableView.dequeueReusableCell(withIdentifier: "BusinessCell", for: indexPath) as! BusinessCell
         cell.update(with: businesses[indexPath.row])
         return cell
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        print(searchText)
+        update(with: searchText)
+    }
+    
+    private func update(with term: String){
+        if(self.searchInProgress != nil && self.searchInProgress.isExecuting){
+            self.searchInProgress.cancel()
+        }
+        
+        self.searchInProgress =
+            Business.searchWithTerm(term: term, completion: { (businesses: [Business]?, error: Error?) -> Void in
+                
+                self.businesses = businesses ?? []
+                self.tableView.reloadData()
+                if let businesses = businesses {
+                    for business in businesses {
+                        print(business.name!)
+                        print(business.address!)
+                    }
+                }
+                
+            }
+        )
     }
     
     /*
