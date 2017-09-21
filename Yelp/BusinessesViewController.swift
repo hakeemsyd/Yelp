@@ -12,12 +12,12 @@ import MBProgressHUD
 
 class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
     
+    let PAGE_SIZE = 4
     var searchInProgress: AFHTTPRequestOperation!
     var businesses: [Business] = [Business]()
     var refreshControl: UIRefreshControl = UIRefreshControl()
     var loadingView: UIActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
     var isMoreDataLoading = false
-    var pageLimit = 4
     
     var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
@@ -74,14 +74,12 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if(businesses.count - indexPath.row <= pageLimit && !self.isMoreDataLoading){
+        if(businesses.count - indexPath.row <= PAGE_SIZE && !self.isMoreDataLoading){
             self.isMoreDataLoading = true;
             loadingView.startAnimating()
             update()
         }
-        
-        
-        
+    
         let cell = tableView.dequeueReusableCell(withIdentifier: "BusinessCell", for: indexPath) as! BusinessCell
         cell.update(with: businesses[indexPath.row])
         return cell
@@ -100,7 +98,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         
         MBProgressHUD.showAdded(to: self.view, animated: true)
         self.searchInProgress =
-            Business.searchWithTerm(term: searchBar.text ?? "", limit: pageLimit, offset: businesses.count,
+            Business.searchWithTerm(term: searchBar.text ?? "", limit: PAGE_SIZE, offset: businesses.count,
                                     completion: { (businesses: [Business]?, error: Error?) -> Void in
                 
                 self.businesses += businesses ?? []
