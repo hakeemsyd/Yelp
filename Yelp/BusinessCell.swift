@@ -34,7 +34,12 @@ class BusinessCell: UITableViewCell {
         reviewCountView.text = "\(business.reviewCount ?? 0) Reviews"
         categoriesView.text = business.categories
         addressView.text = business.address
-        Helper.loadPhoto(withUrl: business.imageURL!, into: displayImageView)
-        Helper.loadPhoto(withUrl: business.ratingImageURL!, into: reviewsImageView)
+        if let posterImg = business.imageURL {
+            Helper.loadPhoto(withUrl: posterImg, into: displayImageView)
+        }
+        
+        if let ratingImg = business.ratingImageURL {
+            Helper.loadPhoto(withUrl: ratingImg, into: reviewsImageView)
+        }
     }
 }

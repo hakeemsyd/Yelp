@@ -15,7 +15,9 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     var searchInProgress: AFHTTPRequestOperation!
     var businesses: [Business] = [Business]()
     var refreshControl: UIRefreshControl = UIRefreshControl()
+    var loadingView: UIActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
     var isMoreDataLoading = false
+    var pageLimit = 4
     
     var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
@@ -24,26 +26,29 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 120
         
+        // nav bar styling
         self.navigationController?.navigationBar.barTintColor = UIColor(red:0.71, green:0.16, blue:0.09, alpha:1.0)
         searchBar = UISearchBar()
         navigationItem.titleView = searchBar
 
+        // pull to refresh
         refreshControl.addTarget(self, action: #selector(onUserInitiatedRefresh(_:)), for: UIControlEvents.valueChanged)
         tableView.insertSubview(refreshControl, at: 0)
         
-        /*let tableFooterView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 50))
-        loadingView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
+        // infinite scroll
+        let tableFooterView: UIView = UIView(frame: CGRect(x: 0, y: 0, width: 320, height: 50))
         loadingView.center = tableFooterView.center
         tableFooterView.addSubview(loadingView)
-        self.tableView.tableFooterView = tableFooterView*/
+        self.tableView.tableFooterView = tableFooterView
         
+        // bootstrap tableview
         tableView.delegate = self
         searchBar.delegate = self
         tableView.dataSource = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        update(with: searchBar.text!)    /* Example of Yelp search with more search options specified
+        update()    /* Example of Yelp search with more search options specified
          Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
          self.businesses = businesses
          
@@ -69,18 +74,10 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if(businesses.count - indexPath.row <= 4 /*&& !self.isMoreDataLoading*/){
-            //self.isMoreDataLoading = true;
-            //loadingView.startAnimating()
-            
-            // ... Code to load more results ...
-            /*self.fetchData(offset: posts.count,handler: {(data, response, error) in
-                self.isMoreDataLoading = false;
-                self.loadingView.stopAnimating()
-                self.posts += self.parsePosts(data: data)
-                self.tableView.reloadData()
-            });*/
-            
+        if(businesses.count - indexPath.row <= pageLimit && !self.isMoreDataLoading){
+            self.isMoreDataLoading = true;
+            loadingView.startAnimating()
+            update()
         }
         
         
@@ -92,10 +89,10 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         print(searchText)
-        update(with: searchText)
+        update()
     }
     
-    private func update(with term: String){
+    private func update(){
         if(self.searchInProgress != nil && self.searchInProgress.isExecuting){
             self.searchInProgress.cancel()
             MBProgressHUD.hide(for: self.view, animated: true)
@@ -103,9 +100,10 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         
         MBProgressHUD.showAdded(to: self.view, animated: true)
         self.searchInProgress =
-            Business.searchWithTerm(term: term, completion: { (businesses: [Business]?, error: Error?) -> Void in
+            Business.searchWithTerm(term: searchBar.text ?? "", limit: pageLimit, offset: businesses.count,
+                                    completion: { (businesses: [Business]?, error: Error?) -> Void in
                 
-                self.businesses = businesses ?? []
+                self.businesses += businesses ?? []
                 self.tableView.reloadData()
                 self.refreshControl.endRefreshing()
                 self.isMoreDataLoading = false;
@@ -123,7 +121,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
 
     func onUserInitiatedRefresh(_ refreshControl: UIRefreshControl) {
-        update(with: searchBar.text ?? "")
+        update()
     }
     
     /*
