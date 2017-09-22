@@ -8,9 +8,14 @@
 
 import UIKit
 
-class Preference {
+struct Preference {
     var name: String = ""
-    var settings: [String: Bool] = [String: Bool]()
+    var settings: [(key: String, val: Bool)] = [(key: String, val: Bool)]()
+    
+    init(name: String, settings: [(key: String, val: Bool)]){
+        self.name = name
+        self.settings = settings
+    }
 }
 
 class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
@@ -68,7 +73,11 @@ class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "SettingCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "YelpSetting", for: indexPath) as!
+            YelpSettingCell
+        
+        cell.settingNameView.text = settings[indexPath.section].settings[indexPath.row].key
+        cell.settingValView.isOn = settings[indexPath.section].settings[indexPath.row].val
         return cell
     }
     
