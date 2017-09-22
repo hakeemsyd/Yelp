@@ -18,7 +18,7 @@ struct Preference {
     }
 }
 
-class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SettingCellDelegate {
 
     @IBOutlet weak var tableView: UITableView!
     let keys = ["", "Distance", "Sort by", "Category"]
@@ -85,14 +85,21 @@ class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewD
         let s = getSetting(with: indexPath)
         cell.settingNameView.text = s.key
         cell.settingValView.isOn = s.val
+        cell.delegate = self
+        cell.cellIdx = indexPath.row
+        cell.sectionName = s.section
         return cell
     }
     
-    func getSetting(with indexPath: IndexPath) -> (key: String, val: Bool) {
+    func getSetting(with indexPath: IndexPath) -> (section: String, key: String, val: Bool) {
         let r = keys[indexPath.section]
         let c = settingKeys[r]?[indexPath.row]
         let v = settings[r]![c!]!
-        return (key: c!, val: v)
+        return (section: r, key: c!, val: v)
+    }
+    
+    func settingSwitchChanged(settingCell: YelpSettingCell, switchIsOn: Bool) {
+        settings[settingCell.sectionName]?[settingCell.settingNameView.text!] = switchIsOn
     }
     
     /*
