@@ -11,6 +11,7 @@ import UIKit
 
 struct Helper {
     
+    static let KEY_SEARCH_SETTINGS = "search_settings"
     static func loadPhoto(withUrl url: URL, into view: UIImageView){
         let imageRequest = URLRequest(url: url)
         view.setImageWith(
@@ -34,5 +35,9 @@ struct Helper {
             failure: { (imageRequest, imageResponse, error) -> Void in
                 // do something for the failure condition
         })
+    }
+    
+    static func defaultSettings() -> [Preference] {
+        return [Preference]()
     }
 }

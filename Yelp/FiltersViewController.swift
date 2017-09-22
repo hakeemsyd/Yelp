@@ -8,20 +8,31 @@
 
 import UIKit
 
+class Preference {
+    var name: String = ""
+    var settings: [String: Bool] = [String: Bool]()
+}
+
 class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var tableView: UITableView!
-    var settings: [String: [String: Bool]] =
+    /*var settings: [String: [String: Bool]] =
                     ["" : ["Offering a deal": false],
                     "Distance" : ["auto": false, "0.3 miles": false, "0.1 miles": false, "1": false, "5": false, "20": false],
                     "Sort By": ["Best matches": false, "Distance": false, "Highest rated": false],
-                    "Category": ["Afghan": false, "African":false, "American": false]]
-    
+                    "Category": ["Afghan": false, "African":false, "American": false]]*/
+    var settings: [Preference] = []
+    let defaults = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.navigationBar.barStyle = UIBarStyle.black
         self.navigationController?.navigationBar.barTintColor = UIColor(red:0.71, green:0.16, blue:0.09, alpha:1.0)
+        if let currSettings = defaults.object(forKey: Helper.KEY_SEARCH_SETTINGS) as? [Preference] {
+            settings = currSettings
+        } else {
+            settings = Helper.defaultSettings()
+        }
         
         tableView.dataSource = self
         tableView.delegate = self
@@ -41,19 +52,24 @@ class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewD
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "Section"
+        return settings[section].name
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return settings.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        <#code#>
+        return settings[section].settings.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        code
+        let cell = tableView.dequeueReusableCell(withIdentifier: "SettingCell", for: indexPath)
+        return cell
     }
     
     /*
