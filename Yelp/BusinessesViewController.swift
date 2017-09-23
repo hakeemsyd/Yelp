@@ -24,7 +24,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
 
     @IBOutlet weak var viewConfig: UISegmentedControl!
     @IBOutlet weak var mapView: MKMapView!
-    let PAGE_SIZE = 4
+    var PAGE_SIZE = 4
     var searchInProgress: AFHTTPRequestOperation!
     var businesses: [Business] = [Business]()
     var refreshControl: UIRefreshControl = UIRefreshControl()
@@ -203,6 +203,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         /*var region = MKCoordinateRegion()
         region.center = userLocation
         mapView.setRegion(region, animated: true)*/
+        //Zoom to user location
     }
     
     func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
@@ -211,6 +212,8 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func mapViewWillStartLoadingMap(_ mapView: MKMapView) {
         print("mapViewWillStartLoadingMap")
+        let viewRegion = MKCoordinateRegionMakeWithDistance(userLocation, 200, 200)
+        mapView.setRegion(viewRegion, animated: false)
         updateMapView()
     }
     
