@@ -1,4 +1,4 @@
-# Project 2 - *Yelpe*
+# Project 2 - Yelp
 
 **Yelp** is a Yelp search app using the [Yelp API](http://www.yelp.com/developers/documentation/v2/search_api).
 
@@ -43,13 +43,15 @@ Please list two areas of the assignment you'd like to **discuss further with you
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='https://github.com/hakeemsyd/Yelp/blob/master/demo/assignment2.1.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+
+<img src='https://github.com/hakeemsyd/Yelp/blob/master/demo/assignment2.2.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+I had to implement filters 3 times because I was unsure of how to best communicate data around multiple view controls. One of those implementations use userdefaults also. The alternate approach is in git branch
 
 ## License
 
