@@ -15,8 +15,15 @@ enum SearchDisplayMode{
     case APPEND, RESET
 }
 
+enum ViewMode: Int {
+    case LIST = 0, MAP
+}
+
 class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, FiltersViewDelegate, CLLocationManagerDelegate {
     
+
+    @IBOutlet weak var viewConfig: UISegmentedControl!
+    @IBOutlet weak var mapView: MKMapView!
     let PAGE_SIZE = 4
     var searchInProgress: AFHTTPRequestOperation!
     var businesses: [Business] = [Business]()
@@ -31,6 +38,8 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     @IBOutlet weak var tableView: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
+        viewConfig.selectedSegmentIndex = ViewMode.LIST.rawValue
+        
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 120
         
@@ -153,6 +162,23 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         startLocationService()
     }
     
+    @IBAction func onViewConfigChanged(_ sender: UISegmentedControl) {
+        switch sender.selectedSegmentIndex
+        {
+        case ViewMode.LIST.rawValue:
+            tableView.isHidden = false
+            mapView.isHidden = true
+            break
+        case ViewMode.MAP.rawValue:
+            tableView.isHidden = true
+            mapView.isHidden = false
+            break
+        default:
+            tableView.isHidden = false
+            mapView.isHidden = true
+            break
+        }
+    }
     func startLocationService(){
         let authorizationStatus = CLLocationManager.authorizationStatus()
         if(authorizationStatus == .authorizedAlways || authorizationStatus == .authorizedWhenInUse
