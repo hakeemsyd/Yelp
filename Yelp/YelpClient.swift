@@ -12,10 +12,19 @@ import AFNetworking
 import BDBOAuth1Manager
 
 // You can register for Yelp API keys here: http://www.yelp.com/developers/manage_api_keys
-let yelpConsumerKey = "vxKwwcR_NMQ7WaEiQBK_CA"
+/*Client ID
+Ka-IlqyVqU7t13PSHBY0uA
+Client Secret
+O469J3ZoVUKAhDCNf4lhKsuyIinu5bDWcdIG1hmTkgAHBlA2ihKEmYj0uwZiCtyh
+ */
+let yelpConsumerKey = "lk"
 let yelpConsumerSecret = "33QCvh5bIF5jIHR5klQr7RtBDhQ"
 let yelpToken = "uRcRswHFYa1VkDrGV6LAW2F8clGh5JHV"
 let yelpTokenSecret = "mqtKIxMIR4iBtBPZCmCLEb-Dz3Y"
+
+// v3
+let clientId = "Ka-IlqyVqU7t13PSHBY0uA"
+let yelpClientSecret = "O469J3ZoVUKAhDCNf4lhKsuyIinu5bDWcdIG1hmTkgAHBlA2ihKEmYj0uwZiCtyh"
 
 enum YelpSortMode: Int {
     case bestMatched = 0, distance, highestRated
@@ -37,6 +46,7 @@ class YelpClient: BDBOAuth1RequestOperationManager {
         self.accessToken = accessToken
         self.accessSecret = accessSecret
         let baseUrl = URL(string: "https://api.yelp.com/v2/")
+        //let baseUrl = URL(string: "https://api.yelp.com/v3/businesses/search")
         super.init(baseURL: baseUrl, consumerKey: key, consumerSecret: secret);
         
         let token = BDBOAuth1Credential(token: accessToken, secret: accessSecret, expiration: nil)
@@ -54,15 +64,15 @@ class YelpClient: BDBOAuth1RequestOperationManager {
         var parameters: [String : AnyObject] = ["term": term as AnyObject, "ll": "37.785771,-122.406165" as AnyObject]
         
         if sort != nil {
-            parameters["sort"] = sort!.rawValue as AnyObject?
+            //parameters["sort"] = sort!.rawValue as AnyObject?
         }
         
         if categories != nil && categories!.count > 0 {
-            parameters["category_filter"] = (categories!).joined(separator: ",") as AnyObject?
+            //parameters["category_filter"] = (categories!).joined(separator: ",") as AnyObject?
         }
         
         if deals != nil {
-            parameters["deals_filter"] = deals! as AnyObject?
+            //parameters["deals_filter"] = deals! as AnyObject?
         }
         
         if limit != nil {
@@ -85,6 +95,8 @@ class YelpClient: BDBOAuth1RequestOperationManager {
                             }
                         },
                         failure: { (operation: AFHTTPRequestOperation?, error: Error) -> Void in
+                            print(error.localizedDescription)
+                            //print(operation?.request.t)
                             completion(nil, error)
                         })!
     }
