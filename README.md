@@ -31,6 +31,7 @@ The following **optional** features are implemented:
 
 The following **additional** features are implemented:
 - [x] Fetching real user's location (with sf location set as default)
+- [x] search updates live as user location changes (see 3rd gif in demo videos)
 - [x] Pull down businesses list to refresh
 - [x] Refactored & added methods in YelpClient to make parameters passing simpler
 
@@ -47,6 +48,8 @@ Here's a walkthrough of implemented user stories:
 
 
 <img src='https://github.com/hakeemsyd/Yelp/blob/master/demo/assignment2.2.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+
+<img src='https://github.com/hakeemsyd/Yelp/blob/master/demo/assignment2.3.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
