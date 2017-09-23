@@ -19,7 +19,7 @@ enum ViewMode: Int {
     case LIST = 0, MAP
 }
 
-class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, FiltersViewDelegate, CLLocationManagerDelegate {
+class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, FiltersViewDelegate, CLLocationManagerDelegate, MKMapViewDelegate {
     
 
     @IBOutlet weak var viewConfig: UISegmentedControl!
@@ -62,6 +62,9 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.delegate = self
         searchBar.delegate = self
         tableView.dataSource = self
+        
+        // bootstrap mapView
+        mapView.delegate = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -119,8 +122,9 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
             
                         self.tableView.reloadData()
                         self.refreshControl.endRefreshing()
-                        self.isMoreDataLoading = false;
-                        
+                        self.isMoreDataLoading = false
+                        self.updateMapView()
+                
                         MBProgressHUD.hide(for: self.view, animated: true)
                         if businesses != nil {
                             for b in businesses! {
@@ -191,5 +195,37 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
             locationManager.requestAlwaysAuthorization()
             print("Fail to start locationService: authstatus: \(authorizationStatus.rawValue), availability: \(CLLocationManager.significantLocationChangeMonitoringAvailable()) ")
         }
+    }
+    
+    
+    func mapView(_ mapView: MKMapView, regionWillChangeAnimated animated: Bool) {
+        print("regionWillChangeAnimated")
+        /*var region = MKCoordinateRegion()
+        region.center = userLocation
+        mapView.setRegion(region, animated: true)*/
+    }
+    
+    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        print("regionDidChangeAnimated")
+    }
+    
+    func mapViewWillStartLoadingMap(_ mapView: MKMapView) {
+        print("mapViewWillStartLoadingMap")
+        updateMapView()
+    }
+    
+    func mapViewDidFinishLoadingMap(_ mapView: MKMapView) {
+        print("mapViewDidFinishLoadingMap")
+    }
+    
+    func updateMapView() {
+        mapView.removeAnnotations(mapView.annotations)
+        var annotations: [MKAnnotation] = [MKAnnotation]()
+        for b in self.businesses {
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = b.coordinate!
+            annotations.append(annotation)
+        }
+        mapView.addAnnotations(annotations)
     }
 }

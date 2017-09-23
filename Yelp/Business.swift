@@ -8,6 +8,7 @@
 
 import UIKit
 import AFNetworking
+import MapKit
 
 class Business: NSObject {
     let name: String?
@@ -17,8 +18,11 @@ class Business: NSObject {
     let distance: String?
     let ratingImageURL: URL?
     let reviewCount: NSNumber?
+    var coordinate: CLLocationCoordinate2D?
     
     init(dictionary: NSDictionary) {
+        self.coordinate = CLLocationCoordinate2D()
+        
         name = dictionary["name"] as? String
         
         let imageURLString = dictionary["image_url"] as? String
@@ -42,6 +46,13 @@ class Business: NSObject {
                     address += ", "
                 }
                 address += neighborhoods![0] as! String
+            }
+            
+            let coords = location!["coordinate"] as? NSDictionary
+            if coords != nil && (coords?.count)! > 0 {
+                let long = coords?["longitude"] as! Double
+                let lat = coords?["latitude"] as! Double
+                self.coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
             }
         }
         self.address = address

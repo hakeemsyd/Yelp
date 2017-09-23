@@ -141,7 +141,7 @@
                                 <segue destination="MWM-QL-71E" kind="presentation" id="rKy-m7-bwl"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" style="plain" id="zJx-nH-DIa">
+                        <barButtonItem key="rightBarButtonItem" title="Item" id="zJx-nH-DIa">
                             <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="XUx-2K-BPQ">
                                 <rect key="frame" x="276" y="7" width="83" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -149,10 +149,12 @@
                                     <segment title="List"/>
                                     <segment title="Map"/>
                                 </segments>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <connections>
                                     <action selector="onViewConfigChanged:" destination="2xI-yr-O5N" eventType="valueChanged" id="csI-5z-MuO"/>
                                 </connections>
                             </segmentedControl>
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
