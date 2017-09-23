@@ -14,7 +14,7 @@ enum SearchDisplayMode{
     case APPEND, RESET
 }
 
-class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
+class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, FiltersViewDelegate {
     
     let PAGE_SIZE = 4
     var searchInProgress: AFHTTPRequestOperation!
@@ -92,27 +92,10 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         
         MBProgressHUD.showAdded(to: self.view, animated: true)
-        
-        var deals: Bool = false
-        var cats: [String] = [String]()
-        var sortMode: YelpSortMode = YelpSortMode.bestMatched
-        if let settings = UserDefaults.standard.dictionary(forKey: Helper.KEY_SEARCH_SETTINGS) as? [String: [String:Bool ]]{
-            for (name, set) in settings {
-                if(name == ""){
-                    deals = set["Offering a deal"]!
-                } else if( name == "Sort by") {
-                    sortMode = self.yelpSortModeFrom(setting: set)
-                } else if( name == "Distance") {
-                    
-                } else if( name == "Category") {
-                    cats = self.categoriesFrom(setting: set)
-                }
-                
-            }
-        }
+        let param = self.getSearchParameters()
         
         self.searchInProgress =
-        Business.searchWithTerm(term: searchBar.text ?? "", limit: PAGE_SIZE, offset: businesses.count, sort: sortMode, categories: cats, deals: deals, completion: {
+            Business.searchWithTerm(term: searchBar.text ?? "", limit: PAGE_SIZE, offset: businesses.count, parameters: param, completion: {
                 (businesses: [Business]?, error: Error?) -> Void in
                         if( mode == SearchDisplayMode.APPEND) {
                             self.businesses += businesses ?? []
@@ -139,25 +122,19 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         update(mode: SearchDisplayMode.RESET)
     }
     
-    func yelpSortModeFrom(setting: [String: Bool]) -> YelpSortMode {
-        if(setting["Best matched"] == true) {
-            return YelpSortMode.bestMatched
-        } else if(setting["Highest rated"] == true) {
-            return YelpSortMode.highestRated
-        } else if(setting["Distance"] == true) {
-            return YelpSortMode.distance
-        }
-        return YelpSortMode.bestMatched
+    final func onFiltersDone(controller: FiltersViewController) {
+        update(mode: SearchDisplayMode.RESET)
     }
     
-    func categoriesFrom(setting: [String: Bool]) -> [String] {
-        var cats: [String] = [String]()
-        for (k,v) in setting {
-            if(v == true){
-                cats.append(k)
-            }
+    func getSearchParameters() -> [String: String] {
+        /*var parameters = [
+            "ll": "\(userLocation.latitude),\(userLocation.longitude)"
+        ]*/
+        var parameters: [String: String] = [String: String]()
+        for (key, value) in YelpFilters.instance.parameters {
+            parameters[key] = value
         }
-        return cats
+        return parameters
     }
     
     /*
