@@ -96,16 +96,22 @@ class YelpClient: BDBOAuth1RequestOperationManager {
         // For additional parameters, see http://www.yelp.com/developers/documentation/v2/search_api
         
         // Default the location to San Francisco
-        //var parameters: [String : AnyObject] = ["term": term as AnyObject, "ll": "37.785771,-122.406165" as AnyObject]
-        var params = parameters
+        var params: [String : AnyObject] = ["term": term as AnyObject, "ll": "37.785771,-122.406165" as AnyObject]
+        /*var params = parameters
         params["terms"] = term
         params["ll"] = "37.785771,-122.406165"
+        var parameters: [String : AnyObject] = ["term": term as AnyObject]*/
+        
         if limit != nil {
             params["limit"] = limit as AnyObject
         }
         
         if offset != nil {
             params["offset"] = offset as AnyObject
+        }
+        
+        for (k,v) in parameters {
+            params[k] = v as AnyObject
         }
         
         print(params)
