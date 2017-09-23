@@ -76,6 +76,14 @@ class Business: NSObject {
         reviewCount = dictionary["review_count"] as? NSNumber
     }
     
+    func printBusiness(){
+        var str = ""
+        str += "\nName: \(name ?? "")\n"
+        str += "Address: \(address ?? "")\n"
+        str += "Distance: \(distance ?? "")\n"
+        print(str)
+    }
+    
     class func businesses(array: [NSDictionary]) -> [Business] {
         var businesses = [Business]()
         for dictionary in array {

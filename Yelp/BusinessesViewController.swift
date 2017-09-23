@@ -53,13 +53,10 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.delegate = self
         searchBar.delegate = self
         tableView.dataSource = self
-        
-        self.locationManager.requestAlwaysAuthorization()
-        self.locationManager.requestWhenInUseAuthorization()
-
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        startLocationService()
         update(mode: SearchDisplayMode.RESET)
     }
     
@@ -116,13 +113,11 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
                         self.isMoreDataLoading = false;
                         
                         MBProgressHUD.hide(for: self.view, animated: true)
-                        /*if let businesses = businesses {
-                        for business in businesses {
-                            print(business.name!)
-                            print(business.address!)
+                        if businesses != nil {
+                            for b in businesses! {
+                                b.printBusiness()
+                            }
                         }
-            
-                }*/
         })
     }
 
@@ -145,19 +140,30 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         return parameters
     }
     
-    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        self.userLocation = (manager.location?.coordinate)!
+       // self.userLocation = (manager.location?.coordinate)!
+        if let loc = manager.location {
+            self.userLocation = loc.coordinate
+            print("Location Update: \(self.userLocation.longitude), \(self.userLocation.latitude)")
+            update(mode: SearchDisplayMode.RESET)
+        }
     }
     
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-     // Get the new view controller using segue.destinationViewController.
-     // Pass the selected object to the new view controller.
-     }
-     */
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        startLocationService()
+    }
     
+    func startLocationService(){
+        let authorizationStatus = CLLocationManager.authorizationStatus()
+        if(authorizationStatus == .authorizedAlways || authorizationStatus == .authorizedWhenInUse
+            && CLLocationManager.significantLocationChangeMonitoringAvailable()){
+            print("Monitoring location")
+            locationManager.delegate = self
+            locationManager.distanceFilter = 500
+            locationManager.startUpdatingLocation()
+        } else {
+            locationManager.requestAlwaysAuthorization()
+            print("Fail to start locationService: authstatus: \(authorizationStatus.rawValue), availability: \(CLLocationManager.significantLocationChangeMonitoringAvailable()) ")
+        }
+    }
 }
