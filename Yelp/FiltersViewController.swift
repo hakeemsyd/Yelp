@@ -99,8 +99,8 @@ class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewD
         let label = filter.label
         
         if filter.type == .Multiple && filter.numItemsVisible! > 0 && filter.numItemsVisible! < filter.options.count && !filter.opened {
-            let selectedOptions = filter.selectedOptions
-            return "\(label) (\(selectedOptions.count) selected)"
+            //let selectedOptions = filter.selectedOptions
+            return label
         }
         
         return label
