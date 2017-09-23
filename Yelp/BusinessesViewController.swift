@@ -123,7 +123,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
                         self.tableView.reloadData()
                         self.refreshControl.endRefreshing()
                         self.isMoreDataLoading = false
-                        self.updateMapView()
+                        self.updateMapView(mode: mode)
                 
                         MBProgressHUD.hide(for: self.view, animated: true)
                         if businesses != nil {
@@ -200,10 +200,10 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func mapViewWillStartLoadingMap(_ mapView: MKMapView) {
         print("mapViewWillStartLoadingMap")
-        updateMapView()
+        update(mode: SearchDisplayMode.APPEND)
     }
     
-    func updateMapView() {
+    func updateMapView(mode: SearchDisplayMode) {
         mapView.removeAnnotations(mapView.annotations)
         var annotations: [MKAnnotation] = [MKAnnotation]()
         for b in self.businesses {
@@ -212,12 +212,14 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
             annotations.append(annotation)
         }
         
-        var viewRegion = MKCoordinateRegionMakeWithDistance(userLocation, 200, 200)
-        if annotations.count > 0 {
-            viewRegion = MKCoordinateRegionMakeWithDistance(businesses[0].coordinate!, 200, 200)
-        }
+        if mode == SearchDisplayMode.RESET {
+            var viewRegion = MKCoordinateRegionMakeWithDistance(userLocation, 200, 200)
+            if annotations.count > 0 {
+                viewRegion = MKCoordinateRegionMakeWithDistance(businesses[0].coordinate!, 200, 200)
+            }
 
-        mapView.setRegion(viewRegion, animated: false)
+            mapView.setRegion(viewRegion, animated: false)
+        }
         mapView.addAnnotations(annotations)
     }
 }
