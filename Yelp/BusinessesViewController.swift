@@ -10,6 +10,10 @@ import UIKit
 import AFNetworking
 import MBProgressHUD
 
+enum SearchDisplayMode{
+    case APPEND, RESET
+}
+
 class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
     
     let PAGE_SIZE = 4
@@ -48,7 +52,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        update()
+        update(mode: SearchDisplayMode.RESET)
     }
     
     override func didReceiveMemoryWarning() {
@@ -68,7 +72,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         if(businesses.count - indexPath.row <= PAGE_SIZE && !self.isMoreDataLoading){
             self.isMoreDataLoading = true;
             loadingView.startAnimating()
-            update()
+            update(mode: SearchDisplayMode.APPEND)
         }
     
         let cell = tableView.dequeueReusableCell(withIdentifier: "BusinessCell", for: indexPath) as! BusinessCell
@@ -78,36 +82,16 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         print(searchText)
-        update()
+        update(mode: SearchDisplayMode.RESET)
     }
     
-    private func update(){
+    private func update(mode: SearchDisplayMode){
         if(self.searchInProgress != nil && self.searchInProgress.isExecuting){
             self.searchInProgress.cancel()
             MBProgressHUD.hide(for: self.view, animated: true)
         }
         
         MBProgressHUD.showAdded(to: self.view, animated: true)
-        /*self.searchInProgress =
-            Business.searchWithTerm(term: searchBar.text ?? "", limit: PAGE_SIZE, offset: businesses.count,
-                                    completion: { (businesses: [Business]?, error: Error?) -> Void in
-                
-                self.businesses += businesses ?? []
-                self.tableView.reloadData()
-                self.refreshControl.endRefreshing()
-                self.isMoreDataLoading = false;
-                
-                MBProgressHUD.hide(for: self.view, animated: true)
-                if let businesses = businesses {
-                    for business in businesses {
-                        print(business.name!)
-                        print(business.address!)
-                    }
-                }
-                
-            }
-        )*/
-        
         
         var deals: Bool = false
         var cats: [String] = [String]()
@@ -130,7 +114,12 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         self.searchInProgress =
         Business.searchWithTerm(term: searchBar.text ?? "", limit: PAGE_SIZE, offset: businesses.count, sort: sortMode, categories: cats, deals: deals, completion: {
                 (businesses: [Business]?, error: Error?) -> Void in
-                        self.businesses += businesses ?? []
+                        if( mode == SearchDisplayMode.APPEND) {
+                            self.businesses += businesses ?? []
+                        } else if( mode == SearchDisplayMode.RESET) {
+                            self.businesses = businesses ?? []
+                        }
+            
                         self.tableView.reloadData()
                         self.refreshControl.endRefreshing()
                         self.isMoreDataLoading = false;
@@ -147,7 +136,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
 
     func onUserInitiatedRefresh(_ refreshControl: UIRefreshControl) {
-        update()
+        update(mode: SearchDisplayMode.RESET)
     }
     
     func yelpSortModeFrom(setting: [String: Bool]) -> YelpSortMode {
