@@ -198,27 +198,9 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     
-    func mapView(_ mapView: MKMapView, regionWillChangeAnimated animated: Bool) {
-        print("regionWillChangeAnimated")
-        /*var region = MKCoordinateRegion()
-        region.center = userLocation
-        mapView.setRegion(region, animated: true)*/
-        //Zoom to user location
-    }
-    
-    func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
-        print("regionDidChangeAnimated")
-    }
-    
     func mapViewWillStartLoadingMap(_ mapView: MKMapView) {
         print("mapViewWillStartLoadingMap")
-        let viewRegion = MKCoordinateRegionMakeWithDistance(userLocation, 200, 200)
-        mapView.setRegion(viewRegion, animated: false)
         updateMapView()
-    }
-    
-    func mapViewDidFinishLoadingMap(_ mapView: MKMapView) {
-        print("mapViewDidFinishLoadingMap")
     }
     
     func updateMapView() {
@@ -229,6 +211,13 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
             annotation.coordinate = b.coordinate!
             annotations.append(annotation)
         }
+        
+        var viewRegion = MKCoordinateRegionMakeWithDistance(userLocation, 200, 200)
+        if annotations.count > 0 {
+            viewRegion = MKCoordinateRegionMakeWithDistance(businesses[0].coordinate!, 200, 200)
+        }
+
+        mapView.setRegion(viewRegion, animated: false)
         mapView.addAnnotations(annotations)
     }
 }
