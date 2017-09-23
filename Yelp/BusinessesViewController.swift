@@ -18,7 +18,6 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     var refreshControl: UIRefreshControl = UIRefreshControl()
     var loadingView: UIActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
     var isMoreDataLoading = false
-    var searchTerm: String = ""
     
     var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
