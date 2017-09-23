@@ -36,20 +36,4 @@ struct Helper {
                 // do something for the failure condition
         })
     }
-    
-    static func defaultSettings() -> [Preference] {
-        return
-            [   Preference(name: "" , settings: [("Offering a deal", false)]),
-                Preference(name: "Distance", settings: [("Auto", false), ("0.3 miles", false), ("0.1 miles", false), ("1", false), ("5", false), ("20", false)]),
-                Preference(name: "Sort By", settings: [("Best matches", false), ("Distance", false), ("Highest rated", false)]),
-                Preference(name: "Category", settings: [("Afghan", false), ("African", false), ("American", false)])
-            ]
-        
-            //,
-             /*"Distance" : ["auto": false, "0.3 miles": false, "0.1 miles": false, "1": false, "5": false, "20": false],
-             "Sort By": ["Best matches": false, "Distance": false, "Highest rated": false],
-             "Category": ["Afghan": false, "African":false, "American": false]]*/
-        //return [Preference]()
-    }
-    
 }

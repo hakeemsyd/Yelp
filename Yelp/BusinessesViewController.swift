@@ -9,12 +9,13 @@
 import UIKit
 import AFNetworking
 import MBProgressHUD
+import MapKit
 
 enum SearchDisplayMode{
     case APPEND, RESET
 }
 
-class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
+class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, FiltersViewDelegate, CLLocationManagerDelegate {
     
     let PAGE_SIZE = 4
     var searchInProgress: AFHTTPRequestOperation!
@@ -22,6 +23,9 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     var refreshControl: UIRefreshControl = UIRefreshControl()
     var loadingView: UIActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
     var isMoreDataLoading = false
+    let locationManager = CLLocationManager()
+    // SFO Locartion by default : 37.785771,-122.406165
+    var userLocation: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 37.785771, longitude: -122.406165)
     
     var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
@@ -49,6 +53,10 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.delegate = self
         searchBar.delegate = self
         tableView.dataSource = self
+        
+        self.locationManager.requestAlwaysAuthorization()
+        self.locationManager.requestWhenInUseAuthorization()
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -92,27 +100,10 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         
         MBProgressHUD.showAdded(to: self.view, animated: true)
-        
-        var deals: Bool = false
-        var cats: [String] = [String]()
-        var sortMode: YelpSortMode = YelpSortMode.bestMatched
-        if let settings = UserDefaults.standard.dictionary(forKey: Helper.KEY_SEARCH_SETTINGS) as? [String: [String:Bool ]]{
-            for (name, set) in settings {
-                if(name == ""){
-                    deals = set["Offering a deal"]!
-                } else if( name == "Sort by") {
-                    sortMode = self.yelpSortModeFrom(setting: set)
-                } else if( name == "Distance") {
-                    
-                } else if( name == "Category") {
-                    cats = self.categoriesFrom(setting: set)
-                }
-                
-            }
-        }
+        let param = self.getSearchParameters()
         
         self.searchInProgress =
-        Business.searchWithTerm(term: searchBar.text ?? "", limit: PAGE_SIZE, offset: businesses.count, sort: sortMode, categories: cats, deals: deals, completion: {
+            Business.searchWithTerm(term: searchBar.text ?? "", limit: PAGE_SIZE, offset: businesses.count, parameters: param, completion: {
                 (businesses: [Business]?, error: Error?) -> Void in
                         if( mode == SearchDisplayMode.APPEND) {
                             self.businesses += businesses ?? []
@@ -125,13 +116,13 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
                         self.isMoreDataLoading = false;
                         
                         MBProgressHUD.hide(for: self.view, animated: true)
-                        if let businesses = businesses {
+                        /*if let businesses = businesses {
                         for business in businesses {
-                        print(business.name!)
-                        print(business.address!)
-                    }
-            }
+                            print(business.name!)
+                            print(business.address!)
+                        }
             
+                }*/
         })
     }
 
@@ -139,25 +130,24 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         update(mode: SearchDisplayMode.RESET)
     }
     
-    func yelpSortModeFrom(setting: [String: Bool]) -> YelpSortMode {
-        if(setting["Best matched"] == true) {
-            return YelpSortMode.bestMatched
-        } else if(setting["Highest rated"] == true) {
-            return YelpSortMode.highestRated
-        } else if(setting["Distance"] == true) {
-            return YelpSortMode.distance
-        }
-        return YelpSortMode.bestMatched
+    final func onFiltersDone(controller: FiltersViewController) {
+        update(mode: SearchDisplayMode.RESET)
     }
     
-    func categoriesFrom(setting: [String: Bool]) -> [String] {
-        var cats: [String] = [String]()
-        for (k,v) in setting {
-            if(v == true){
-                cats.append(k)
-            }
+    func getSearchParameters() -> [String: String] {
+        var parameters: [String: String] = [String: String]()
+        parameters = [
+            "ll": "\(userLocation.latitude),\(userLocation.longitude)"
+        ]
+        for (key, value) in YelpFilters.instance.parameters {
+            parameters[key] = value
         }
-        return cats
+        return parameters
+    }
+    
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        self.userLocation = (manager.location?.coordinate)!
     }
     
     /*

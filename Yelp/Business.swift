@@ -92,4 +92,9 @@ class Business: NSObject {
     class func searchWithTerm(term: String, limit: Int, offset: Int, sort: YelpSortMode?, categories: [String]?, deals: Bool?, completion: @escaping ([Business]?, Error?) -> Void) -> AFHTTPRequestOperation {
         return YelpClient.sharedInstance.searchWithTerm(term, limit: limit, offset: offset, sort: sort, categories: categories, deals: deals, completion: completion)
     }
+    
+    class func searchWithTerm(term: String, limit: Int, offset: Int, parameters: [String: Any],completion: @escaping ([Business]?, Error?) -> Void) -> AFHTTPRequestOperation {
+    
+        return YelpClient.sharedInstance.searchWithTerm(term, limit: limit, offset: offset, parameters: parameters, completion: completion)
+    }
 }

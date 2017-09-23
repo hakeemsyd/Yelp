@@ -8,44 +8,28 @@
 
 import UIKit
 
-struct Preference {
-    var name: String = ""
-    var settings: [(key: String, val: Bool)] = [(key: String, val: Bool)]()
-    
-    init(name: String, settings: [(key: String, val: Bool)]){
-        self.name = name
-        self.settings = settings
-    }
+protocol FiltersViewDelegate {
+    func onFiltersDone(controller: FiltersViewController)
 }
 
-class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, SettingCellDelegate {
+class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet weak var tableView: UITableView!
-    let keys = ["", "Distance", "Sort by", "Category"]
-    let settingKeys = ["": ["Offering a deal"],
-                              "Distance" : ["Auto", "0.1 miles", "0.3 miles", "1 miles", "5 miles", "20 miles"],
-                              "Sort by":["Best matched", "Distance", "Highest rated"],
-                              "Category": ["Afghan", "African", "American"]]
-    
-    var settings: [String: [String: Bool]] =
-                    ["" : ["Offering a deal": false],
-                    "Distance" : ["Auto": false, "0.3 miles": false, "0.1 miles": false, "1 miles": false, "5 miles": false, "20 miles": false],
-                    "Sort by": ["Best matched": false, "Distance": false, "Highest rated": false],
-                    "Category": ["Afghan": false, "African":false, "American": false]]
-    
-    //var settings: [Preference] = []
-    let defaults = UserDefaults.standard
+    var settings: YelpFilters = YelpFilters()
+    var delegate: FiltersViewDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.navigationBar.barStyle = UIBarStyle.black
         self.navigationController?.navigationBar.barTintColor = UIColor(red:0.71, green:0.16, blue:0.09, alpha:1.0)
-        if let currSettings = defaults.dictionary(forKey: Helper.KEY_SEARCH_SETTINGS) as? [String: [String: Bool]] {
-            settings = currSettings
-        }
 
         tableView.dataSource = self
         tableView.delegate = self
+        
+        self.tableView.rowHeight = UITableViewAutomaticDimension
+        
+        // Create a new instance of the model for this "session"
+        self.settings = YelpFilters(instance: YelpFilters.instance)
     }
 
     override func didReceiveMemoryWarning() {
@@ -54,9 +38,11 @@ class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewD
     
 
     @IBAction func onSave(_ sender: UIBarButtonItem) {
-        defaults.setValue(settings, forKey: Helper.KEY_SEARCH_SETTINGS)
-        defaults.synchronize()
+        //defaults.setValue(settings, forKey: Helper.KEY_SEARCH_SETTINGS)
+        //defaults.synchronize()
+        YelpFilters.instance.copyStateFrom(instance: self.settings)
         dismiss(animated: true, completion: nil)
+        self.delegate?.onFiltersDone(controller: self)
     }
     
     @IBAction func onCancel(_ sender: UIBarButtonItem) {
@@ -65,51 +51,133 @@ class FiltersViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        
+        let filter = self.settings.filters[indexPath.section]
+        switch filter.type {
+        case .Single:
+            if filter.opened {
+                let previousIndex = filter.selectedIndex
+                if previousIndex != indexPath.row {
+                    filter.selectedIndex = indexPath.row
+                    let previousIndexPath = IndexPath(row: previousIndex, section: indexPath.section)
+                    
+                    
+                    self.tableView.reloadRows(at: [indexPath, previousIndexPath], with: .automatic)
+                }
+            }
+            
+            let opened = filter.opened;
+            filter.opened = !opened;
+            
+            if opened {
+                //let time = dispatch_time(DISPATCH_TIME_NOW, Int64(0.25 * Double(NSEC_PER_SEC)))
+                // dispatch_after(time, dispatch_get_main_queue(), {
+                //self.tableView.reloadSections(NSMutableIndexSet(index: indexPath.section) as IndexSet, with: .automatic)
+                // })
+                self.tableView.reloadSections(IndexSet(integersIn: indexPath.section...indexPath.section), with: .automatic)
+            } else {
+                self.tableView.reloadSections(IndexSet(integersIn: indexPath.section...indexPath.section), with: .automatic)
+            }
+        case .Multiple:
+            if !filter.opened && indexPath.row == filter.numItemsVisible {
+                filter.opened = true
+                self.tableView.reloadSections(IndexSet(integersIn: indexPath.section...indexPath.section), with: .automatic)
+            } else {
+                let option = filter.options[indexPath.row]
+                option.selected = !option.selected
+                self.tableView.reloadRows(at: [indexPath], with: .automatic)
+            }
+        default:
+            break
+        }
+
     }
+
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return keys[section]
+        let filter = self.settings.filters[section]
+        let label = filter.label
+        
+        if filter.type == .Multiple && filter.numItemsVisible! > 0 && filter.numItemsVisible! < filter.options.count && !filter.opened {
+            //let selectedOptions = filter.selectedOptions
+            return label
+        }
+        
+        return label
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return keys.count
+        return self.settings.filters.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return (settingKeys[keys[section]]?.count)!
+        if let filter = settings.filters[section] as Filter?{
+            if !filter.opened {
+                if filter.type == FilterType.Single {
+                    return 1
+                } else if filter.numItemsVisible! > 0 && filter.numItemsVisible! < filter.options.count {
+                    return filter.numItemsVisible! + 1
+                }
+            }
+            return filter.options.count
+        }
+        return 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "YelpSetting", for: indexPath) as!
-            YelpSettingCell
-        let s = getSetting(with: indexPath)
-        cell.settingNameView.text = s.key
-        cell.settingValView.isOn = s.val
-        cell.delegate = self
-        cell.cellIdx = indexPath.row
-        cell.sectionName = s.section
+        /*let cell = tableView.dequeueReusableCell(withIdentifier: "YelpSetting", for: indexPath) as!
+            YelpSettingCell*/
+        let cell = UITableViewCell(style: UITableViewCellStyle.default, reuseIdentifier: nil)
+        
+        let filter = self.settings.filters[indexPath.section] as Filter
+        switch filter.type {
+        case .Single:
+            if filter.opened {
+                let option = filter.options[indexPath.row]
+                cell.textLabel?.text = option.label
+                if option.selected {
+                    cell.accessoryView = UIImageView(image: UIImage(named: "Check"))
+                } else {
+                    cell.accessoryView = UIImageView(image: UIImage(named: "Uncheck"))
+                }
+            } else {
+                cell.textLabel?.text = filter.options[filter.selectedIndex].label
+                cell.accessoryView = UIImageView(image: UIImage(named: "Dropdown"))
+            }
+        case .Multiple:
+            if filter.opened || indexPath.row < filter.numItemsVisible! {
+                let option = filter.options[indexPath.row]
+                cell.textLabel?.text = option.label
+                if option.selected {
+                    cell.accessoryView = UIImageView(image: UIImage(named: "Check"))
+                } else {
+                    cell.accessoryView = UIImageView(image: UIImage(named: "Uncheck"))
+                }
+            } else {
+                cell.textLabel?.text = "See All"
+                cell.textLabel?.textAlignment = NSTextAlignment.center
+                cell.textLabel?.textColor = .darkGray
+            }
+        default:
+            let option = filter.options[indexPath.row]
+            cell.textLabel?.text = option.label
+            cell.selectionStyle = UITableViewCellSelectionStyle.none
+            let switchView = UISwitch(frame: CGRect.zero)
+            switchView.isOn = option.selected
+            switchView.onTintColor = UIColor(red: 73.0/255.0, green: 134.0/255.0, blue: 231.0/255.0, alpha: 1.0)
+            switchView.addTarget(self, action: #selector(handleSwitchValueChanged), for: UIControlEvents.valueChanged)
+            cell.accessoryView = switchView
+        }
+        
         return cell
     }
     
-    func getSetting(with indexPath: IndexPath) -> (section: String, key: String, val: Bool) {
-        let r = keys[indexPath.section]
-        let c = settingKeys[r]?[indexPath.row]
-        let v = settings[r]![c!]!
-        return (section: r, key: c!, val: v)
+    func handleSwitchValueChanged(switchView: UISwitch) -> Void {
+        let cell = switchView.superview as! UITableViewCell
+        if let indexPath = self.tableView.indexPath(for: cell) {
+            let filter = self.settings.filters[indexPath.section] as Filter
+            let option = filter.options[indexPath.row]
+            option.selected = switchView.isOn
+        }
     }
-    
-    func settingSwitchChanged(settingCell: YelpSettingCell, switchIsOn: Bool) {
-        settings[settingCell.sectionName]?[settingCell.settingNameView.text!] = switchIsOn
-    }
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
