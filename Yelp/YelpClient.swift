@@ -37,6 +37,7 @@ class YelpClient: BDBOAuth1RequestOperationManager {
         self.accessToken = accessToken
         self.accessSecret = accessSecret
         let baseUrl = URL(string: "https://api.yelp.com/v2/")
+        //let baseUrl = URL(string: "https://api.yelp.com/v3/businesses/search")
         super.init(baseURL: baseUrl, consumerKey: key, consumerSecret: secret);
         
         let token = BDBOAuth1Credential(token: accessToken, secret: accessSecret, expiration: nil)
@@ -58,7 +59,7 @@ class YelpClient: BDBOAuth1RequestOperationManager {
         }
         
         if categories != nil && categories!.count > 0 {
-            parameters["category_filter"] = (categories!).joined(separator: ",") as AnyObject?
+            parameters["category_filter"] = categories as AnyObject?
         }
         
         if deals != nil {
@@ -85,6 +86,8 @@ class YelpClient: BDBOAuth1RequestOperationManager {
                             }
                         },
                         failure: { (operation: AFHTTPRequestOperation?, error: Error) -> Void in
+                            print(error.localizedDescription)
+                            //print(operation?.request.t)
                             completion(nil, error)
                         })!
     }

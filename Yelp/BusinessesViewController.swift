@@ -48,16 +48,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        update()    /* Example of Yelp search with more search options specified
-         Business.searchWithTerm("Restaurants", sort: .Distance, categories: ["asianfusion", "burgers"], deals: true) { (businesses: [Business]!, error: NSError!) -> Void in
-         self.businesses = businesses
-         
-         for business in businesses {
-         print(business.name!)
-         print(business.address!)
-         }
-         }
-         */
+        update()
     }
     
     override func didReceiveMemoryWarning() {
@@ -97,7 +88,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         
         MBProgressHUD.showAdded(to: self.view, animated: true)
-        self.searchInProgress =
+        /*self.searchInProgress =
             Business.searchWithTerm(term: searchBar.text ?? "", limit: PAGE_SIZE, offset: businesses.count,
                                     completion: { (businesses: [Business]?, error: Error?) -> Void in
                 
@@ -115,11 +106,69 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
                 }
                 
             }
-        )
+        )*/
+        
+        
+        var deals: Bool = false
+        var cats: [String] = [String]()
+        var sortMode: YelpSortMode = YelpSortMode.bestMatched
+        if let settings = UserDefaults.standard.dictionary(forKey: Helper.KEY_SEARCH_SETTINGS) as? [String: [String:Bool ]]{
+            for (name, set) in settings {
+                if(name == ""){
+                    deals = set["Offering a deal"]!
+                } else if( name == "Sort by") {
+                    sortMode = self.yelpSortModeFrom(setting: set)
+                } else if( name == "Distance") {
+                    
+                } else if( name == "Category") {
+                    cats = self.categoriesFrom(setting: set)
+                }
+                
+            }
+        }
+        
+        self.searchInProgress =
+        Business.searchWithTerm(term: searchBar.text ?? "", limit: PAGE_SIZE, offset: businesses.count, sort: sortMode, categories: cats, deals: deals, completion: {
+                (businesses: [Business]?, error: Error?) -> Void in
+                        self.businesses += businesses ?? []
+                        self.tableView.reloadData()
+                        self.refreshControl.endRefreshing()
+                        self.isMoreDataLoading = false;
+                        
+                        MBProgressHUD.hide(for: self.view, animated: true)
+                        if let businesses = businesses {
+                        for business in businesses {
+                        print(business.name!)
+                        print(business.address!)
+                    }
+            }
+            
+        })
     }
 
     func onUserInitiatedRefresh(_ refreshControl: UIRefreshControl) {
         update()
+    }
+    
+    func yelpSortModeFrom(setting: [String: Bool]) -> YelpSortMode {
+        if(setting["Best matched"] == true) {
+            return YelpSortMode.bestMatched
+        } else if(setting["Highest rated"] == true) {
+            return YelpSortMode.highestRated
+        } else if(setting["Distance"] == true) {
+            return YelpSortMode.distance
+        }
+        return YelpSortMode.bestMatched
+    }
+    
+    func categoriesFrom(setting: [String: Bool]) -> [String] {
+        var cats: [String] = [String]()
+        for (k,v) in setting {
+            if(v == true){
+                cats.append(k)
+            }
+        }
+        return cats
     }
     
     /*
