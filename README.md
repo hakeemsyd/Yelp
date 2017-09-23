@@ -56,7 +56,7 @@ I had to implement filters 3 times because I was unsure of how to best communica
 
 ## License
 
-    Copyright [yyyy] [name of copyright owner]
+    Copyright [2017] [Syed Hakeem Abbas]
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
