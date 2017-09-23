@@ -9,12 +9,13 @@
 import UIKit
 import AFNetworking
 import MBProgressHUD
+import MapKit
 
 enum SearchDisplayMode{
     case APPEND, RESET
 }
 
-class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, FiltersViewDelegate {
+class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, FiltersViewDelegate, CLLocationManagerDelegate {
     
     let PAGE_SIZE = 4
     var searchInProgress: AFHTTPRequestOperation!
@@ -22,6 +23,9 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     var refreshControl: UIRefreshControl = UIRefreshControl()
     var loadingView: UIActivityIndicatorView = UIActivityIndicatorView(activityIndicatorStyle: .gray)
     var isMoreDataLoading = false
+    let locationManager = CLLocationManager()
+    // SFO Locartion by default : 37.785771,-122.406165
+    var userLocation: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 37.785771, longitude: -122.406165)
     
     var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
@@ -49,6 +53,10 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.delegate = self
         searchBar.delegate = self
         tableView.dataSource = self
+        
+        self.locationManager.requestAlwaysAuthorization()
+        self.locationManager.requestWhenInUseAuthorization()
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -108,13 +116,13 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
                         self.isMoreDataLoading = false;
                         
                         MBProgressHUD.hide(for: self.view, animated: true)
-                        if let businesses = businesses {
+                        /*if let businesses = businesses {
                         for business in businesses {
-                        print(business.name!)
-                        print(business.address!)
-                    }
-            }
+                            print(business.name!)
+                            print(business.address!)
+                        }
             
+                }*/
         })
     }
 
@@ -127,14 +135,19 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func getSearchParameters() -> [String: String] {
-        /*var parameters = [
-            "ll": "\(userLocation.latitude),\(userLocation.longitude)"
-        ]*/
         var parameters: [String: String] = [String: String]()
+        parameters = [
+            "ll": "\(userLocation.latitude),\(userLocation.longitude)"
+        ]
         for (key, value) in YelpFilters.instance.parameters {
             parameters[key] = value
         }
         return parameters
+    }
+    
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        self.userLocation = (manager.location?.coordinate)!
     }
     
     /*

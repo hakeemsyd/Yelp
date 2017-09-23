@@ -108,7 +108,7 @@ class YelpClient: BDBOAuth1RequestOperationManager {
             params["offset"] = offset as AnyObject
         }
         
-        print(parameters)
+        print(params)
         
         return self.get("search", parameters: params,
                         success: { (operation: AFHTTPRequestOperation, response: Any) -> Void in

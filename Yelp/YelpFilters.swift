@@ -184,8 +184,8 @@ class YelpFilters {
                     if filter.name != nil {
                         let selectedOptions = filter.selectedOptions
                         if selectedOptions.count > 0 {
-                            // TODO
-                            // parameters[filter.name!] = ",".join(selectedOptions.map({ $0.value }))
+                            let m = selectedOptions.map({$0.value})
+                            parameters[filter.name!] = m.joined(separator: ",")
                         }
                     }
                 default:
