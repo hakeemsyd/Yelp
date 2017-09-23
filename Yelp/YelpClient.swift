@@ -64,15 +64,15 @@ class YelpClient: BDBOAuth1RequestOperationManager {
         var parameters: [String : AnyObject] = ["term": term as AnyObject, "ll": "37.785771,-122.406165" as AnyObject]
         
         if sort != nil {
-            //parameters["sort"] = sort!.rawValue as AnyObject?
+            parameters["sort"] = sort!.rawValue as AnyObject?
         }
         
         if categories != nil && categories!.count > 0 {
-            //parameters["category_filter"] = (categories!).joined(separator: ",") as AnyObject?
+            parameters["category_filter"] = (categories!).joined(separator: ",") as AnyObject?
         }
         
         if deals != nil {
-            //parameters["deals_filter"] = deals! as AnyObject?
+            parameters["deals_filter"] = deals! as AnyObject?
         }
         
         if limit != nil {

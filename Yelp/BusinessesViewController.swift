@@ -128,6 +128,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
             }
         }
         
+        self.searchInProgress =
         Business.searchWithTerm(term: searchBar.text ?? "", limit: PAGE_SIZE, offset: businesses.count, sort: sortMode, categories: cats, deals: deals, completion: {
                 (businesses: [Business]?, error: Error?) -> Void in
                         self.businesses += businesses ?? []
