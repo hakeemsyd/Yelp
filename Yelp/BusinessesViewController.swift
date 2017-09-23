@@ -15,9 +15,16 @@ enum SearchDisplayMode{
     case APPEND, RESET
 }
 
-class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, FiltersViewDelegate, CLLocationManagerDelegate {
+enum ViewMode: Int {
+    case LIST = 0, MAP
+}
+
+class BusinessesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, FiltersViewDelegate, CLLocationManagerDelegate, MKMapViewDelegate {
     
-    let PAGE_SIZE = 4
+
+    @IBOutlet weak var viewConfig: UISegmentedControl!
+    @IBOutlet weak var mapView: MKMapView!
+    var PAGE_SIZE = 4
     var searchInProgress: AFHTTPRequestOperation!
     var businesses: [Business] = [Business]()
     var refreshControl: UIRefreshControl = UIRefreshControl()
@@ -31,6 +38,8 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
     @IBOutlet weak var tableView: UITableView!
     override func viewDidLoad() {
         super.viewDidLoad()
+        viewConfig.selectedSegmentIndex = ViewMode.LIST.rawValue
+        
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 120
         
@@ -53,6 +62,9 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.delegate = self
         searchBar.delegate = self
         tableView.dataSource = self
+        
+        // bootstrap mapView
+        mapView.delegate = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -110,8 +122,9 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
             
                         self.tableView.reloadData()
                         self.refreshControl.endRefreshing()
-                        self.isMoreDataLoading = false;
-                        
+                        self.isMoreDataLoading = false
+                        self.updateMapView(mode: mode)
+                
                         MBProgressHUD.hide(for: self.view, animated: true)
                         if businesses != nil {
                             for b in businesses! {
@@ -153,6 +166,23 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         startLocationService()
     }
     
+    @IBAction func onViewConfigChanged(_ sender: UISegmentedControl) {
+        switch sender.selectedSegmentIndex
+        {
+        case ViewMode.LIST.rawValue:
+            tableView.isHidden = false
+            mapView.isHidden = true
+            break
+        case ViewMode.MAP.rawValue:
+            tableView.isHidden = true
+            mapView.isHidden = false
+            break
+        default:
+            tableView.isHidden = false
+            mapView.isHidden = true
+            break
+        }
+    }
     func startLocationService(){
         let authorizationStatus = CLLocationManager.authorizationStatus()
         if(authorizationStatus == .authorizedAlways || authorizationStatus == .authorizedWhenInUse
@@ -165,5 +195,31 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
             locationManager.requestAlwaysAuthorization()
             print("Fail to start locationService: authstatus: \(authorizationStatus.rawValue), availability: \(CLLocationManager.significantLocationChangeMonitoringAvailable()) ")
         }
+    }
+    
+    
+    func mapViewWillStartLoadingMap(_ mapView: MKMapView) {
+        print("mapViewWillStartLoadingMap")
+        update(mode: SearchDisplayMode.APPEND)
+    }
+    
+    func updateMapView(mode: SearchDisplayMode) {
+        mapView.removeAnnotations(mapView.annotations)
+        var annotations: [MKAnnotation] = [MKAnnotation]()
+        for b in self.businesses {
+            let annotation = MKPointAnnotation()
+            annotation.coordinate = b.coordinate!
+            annotations.append(annotation)
+        }
+        
+        if mode == SearchDisplayMode.RESET {
+            var viewRegion = MKCoordinateRegionMakeWithDistance(userLocation, 200, 200)
+            if annotations.count > 0 {
+                viewRegion = MKCoordinateRegionMakeWithDistance(businesses[0].coordinate!, 200, 200)
+            }
+
+            mapView.setRegion(viewRegion, animated: false)
+        }
+        mapView.addAnnotations(annotations)
     }
 }

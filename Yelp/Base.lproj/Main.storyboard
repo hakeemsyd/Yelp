@@ -22,8 +22,15 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="ehi-zP-kdz">
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="603" id="WPq-Gv-0ck"/>
+                                    <constraint firstAttribute="width" constant="375" id="o3h-uS-b8r"/>
+                                </constraints>
+                            </mapView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="125" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="GFm-Fx-aTr">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="BusinessCell" rowHeight="125" id="MEb-aD-JJQ" customClass="BusinessCell" customModule="Yelp" customModuleProvider="target">
@@ -119,10 +126,12 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="ehi-zP-kdz" firstAttribute="leading" secondItem="XhR-oz-92f" secondAttribute="leading" id="6Gi-Ea-qc8"/>
                             <constraint firstItem="VBY-gq-v8E" firstAttribute="top" secondItem="GFm-Fx-aTr" secondAttribute="bottom" id="EPs-9f-GPb"/>
                             <constraint firstItem="GFm-Fx-aTr" firstAttribute="leading" secondItem="XhR-oz-92f" secondAttribute="leading" id="Sdq-vL-yxw"/>
                             <constraint firstAttribute="trailing" secondItem="GFm-Fx-aTr" secondAttribute="trailing" id="e0H-rL-0Db"/>
-                            <constraint firstItem="GFm-Fx-aTr" firstAttribute="top" secondItem="hR0-74-jRp" secondAttribute="bottom" constant="-64" id="fWV-QS-C24"/>
+                            <constraint firstItem="GFm-Fx-aTr" firstAttribute="top" secondItem="hR0-74-jRp" secondAttribute="bottom" id="fWV-QS-C24"/>
+                            <constraint firstItem="ehi-zP-kdz" firstAttribute="top" secondItem="hR0-74-jRp" secondAttribute="bottom" id="jUX-hp-b5V"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="hAD-lk-QmH">
@@ -132,9 +141,26 @@
                                 <segue destination="MWM-QL-71E" kind="presentation" id="rKy-m7-bwl"/>
                             </connections>
                         </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Item" id="zJx-nH-DIa">
+                            <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="XUx-2K-BPQ">
+                                <rect key="frame" x="276" y="7" width="83" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <segments>
+                                    <segment title="List"/>
+                                    <segment title="Map"/>
+                                </segments>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <connections>
+                                    <action selector="onViewConfigChanged:" destination="2xI-yr-O5N" eventType="valueChanged" id="csI-5z-MuO"/>
+                                </connections>
+                            </segmentedControl>
+                            <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="mapView" destination="ehi-zP-kdz" id="PJt-Rm-W8P"/>
                         <outlet property="tableView" destination="GFm-Fx-aTr" id="Szq-8C-6iW"/>
+                        <outlet property="viewConfig" destination="XUx-2K-BPQ" id="YYd-s8-5Yc"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Fgb-4b-F1b" userLabel="First Responder" sceneMemberID="firstResponder"/>
