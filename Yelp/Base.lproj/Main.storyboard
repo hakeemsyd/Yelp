@@ -30,7 +30,7 @@
                                 </constraints>
                             </mapView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="125" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="GFm-Fx-aTr">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="BusinessCell" rowHeight="125" id="MEb-aD-JJQ" customClass="BusinessCell" customModule="Yelp" customModuleProvider="target">
@@ -130,7 +130,7 @@
                             <constraint firstItem="VBY-gq-v8E" firstAttribute="top" secondItem="GFm-Fx-aTr" secondAttribute="bottom" id="EPs-9f-GPb"/>
                             <constraint firstItem="GFm-Fx-aTr" firstAttribute="leading" secondItem="XhR-oz-92f" secondAttribute="leading" id="Sdq-vL-yxw"/>
                             <constraint firstAttribute="trailing" secondItem="GFm-Fx-aTr" secondAttribute="trailing" id="e0H-rL-0Db"/>
-                            <constraint firstItem="GFm-Fx-aTr" firstAttribute="top" secondItem="hR0-74-jRp" secondAttribute="bottom" constant="-64" id="fWV-QS-C24"/>
+                            <constraint firstItem="GFm-Fx-aTr" firstAttribute="top" secondItem="hR0-74-jRp" secondAttribute="bottom" id="fWV-QS-C24"/>
                             <constraint firstItem="ehi-zP-kdz" firstAttribute="top" secondItem="hR0-74-jRp" secondAttribute="bottom" id="jUX-hp-b5V"/>
                         </constraints>
                     </view>
