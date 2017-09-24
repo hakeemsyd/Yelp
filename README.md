@@ -43,10 +43,10 @@ Please list two areas of the assignment you'd like to **discuss further with you
 
 Here's a walkthrough of implemented user stories:
 
-<img src='https://github.com/hakeemsyd/Yelp/blob/master/demo/assignment2.1.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='https://github.com/hakeemsyd/Yelp/blob/master/demo/assign_2.1.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 
-<img src='https://github.com/hakeemsyd/Yelp/blob/master/demo/assignment2.2.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+<img src='https://github.com/hakeemsyd/Yelp/blob/master/demo/assign_2.2.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
