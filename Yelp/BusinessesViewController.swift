@@ -110,9 +110,13 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         
         MBProgressHUD.showAdded(to: self.view, animated: true)
         let param = self.getSearchParameters()
+        var offset = 0
+        if(mode == SearchDisplayMode.APPEND){
+            offset = businesses.count
+        }
         
         self.searchInProgress =
-            Business.searchWithTerm(term: searchBar.text ?? "", limit: PAGE_SIZE, offset: businesses.count, parameters: param, completion: {
+            Business.searchWithTerm(term: searchBar.text ?? "", limit: PAGE_SIZE, offset: offset, parameters: param, completion: {
                 (businesses: [Business]?, error: Error?) -> Void in
                         if( mode == SearchDisplayMode.APPEND) {
                             self.businesses += businesses ?? []
