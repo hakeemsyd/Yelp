@@ -24,7 +24,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
 
     @IBOutlet weak var viewConfig: UISegmentedControl!
     @IBOutlet weak var mapView: MKMapView!
-    var PAGE_SIZE = 4
+    let PAGE_SIZE = 4
     var searchInProgress: AFHTTPRequestOperation!
     var businesses: [Business] = [Business]()
     var refreshControl: UIRefreshControl = UIRefreshControl()
@@ -201,12 +201,6 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     
-    
-    func mapViewWillStartLoadingMap(_ mapView: MKMapView) {
-        print("mapViewWillStartLoadingMap")
-        update(mode: SearchDisplayMode.APPEND)
-    }
-    
     func updateMapView(mode: SearchDisplayMode) {
         mapView.removeAnnotations(mapView.annotations)
         var annotations: [MKAnnotation] = [MKAnnotation]()
@@ -217,7 +211,7 @@ class BusinessesViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         
         if mode == SearchDisplayMode.RESET {
-            var viewRegion = MKCoordinateRegionMakeWithDistance(userLocation, 200, 200)
+            var viewRegion = MKCoordinateRegionMakeWithDistance(userLocation, 1000, 1000)
             if annotations.count > 0 {
                 viewRegion = MKCoordinateRegionMakeWithDistance(businesses[0].coordinate!, 200, 200)
             }
